@@ -17,7 +17,7 @@ exit(1).
 
 struct ids1{
     int count_child;
-    int count_grandchild;
+    int count_grand;
     int parent;
     int child;
     int grandchild;
@@ -29,8 +29,8 @@ int main(){
     a.parent = (int)getpid();
     pid_t pid=fork();
     a.count_child=1;
-    a.count_grandchild=1;
-    // ftok to generate unique key
+    a.count_grand=1;
+    
     key_t key = 17017;
     // shmget returns an identifier in shmid
     int shmid = shmget(key, sizeof(struct ids1), 0666 | IPC_CREAT);
@@ -43,29 +43,32 @@ int main(){
     }
     else if(pid ==0){
         printf("\nI am the child \n Pid : %d\n PPID : %d\n",(int)getpid(),(int)getppid());
-        a.child=(int)getpid();
-        a.count_child=a.count_child+1;
-        pid_t pid_grandchild=fork();
+        int temp = a.count_child;
+        a.count_child = temp + 1;
+        pid_t pid_grand=fork();
 
-        if (pid_grandchild<0){
+        if (pid_grand<0){
             perror("Fork Failed\n");
             exit(1);
         }
-        else if(pid_grandchild==0){
-            a.grandchild = (int)getpid();
-            a.count_grandchild = a.count_grandchild + 1;
+        else if(pid_grand==0){
+            temp=a.count_grand;
+            a.count_grand = temp + 1;
             printf("I am the Grand-child with Pid :%d\n",(int)getpid());
             printf("Pid:%d::My Roll-No is : CSB17017\n",(int)getpid());
             printf("\nExiting process with Pid:%d\n",(int)getpid());
+            a.grandchild =(int)getpid();
             exit(0);
         }
+        
         printf("\nExiting process with Pid:%d\n",(int)getpid());
         exit(0);}
+    a.child = (int)pid;
     printf("\nFrom the parent:\n");
     printf("\n For parent PID:%d\n", a.parent);
     printf("\n For child PID:%d and PPID:%d\n",a.child,a.parent);
     printf("\n For grandchild PID:%d and PPID:%d\n", a.grandchild, a.child);
-    printf("\n count child:%d  grandchild:%d \n",a.count_child,a.count_grandchild);
+    printf("\n count child:%d  grandchild:%d \n",a.count_child,a.count_grand);
     printf("\nExiting process with Pid:%d\n",(int)getpid());
     //detach from shared memory
     shmdt(str);
