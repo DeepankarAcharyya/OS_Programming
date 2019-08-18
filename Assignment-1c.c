@@ -14,22 +14,30 @@ program name by the child process.
 #include<sys/wait.h>
 #include<utmp.h>
 
-int main(){
+int main(int argc,char *argv[]){
     printf("i am the parent with pid: %d\n",(int) getpid());
+    int stat;
     pid_t pid=fork();
     
     if (pid<0){
         perror("Fork Failed\n");
     }
     else if(pid ==0){
+        printf("\nName of the program:%s\n", argv[0]);
+
         printf("\nI am the child \n Pid : %d\n PPID : %d\n Going to execute the program.\n",(int)getpid(),(int)getppid());
         execv("./userdesignedprogram",NULL);
+        
         printf("\nExiting process with Pid:%d\n",(int)getpid());
         exit(0);
     }  
 
         printf("\nPid:%d waiting for its child process to end!\n",(int)getpid());
-        wait(NULL);
-    printf("\nExiting process with Pid:%d\n",(int)getpid());
-    return 0;
+        wait(&stat);
+
+        if (WIFEXITED(stat))
+            printf("Exit status: %d\n", WEXITSTATUS(stat));
+        
+        printf("\nExiting process with Pid:%d\n", (int)getpid());
+        return 0;
 }
