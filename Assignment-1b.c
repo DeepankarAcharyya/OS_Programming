@@ -15,15 +15,22 @@ the grandchild to print the output into the stdout.
 
 //function to find out who is logging in the local machine
 void current_users(){
-    
+    struct utmp *n;
+    setutent();
+    n = getutent();
+
+    while (n){
+        if (n->ut_type == USER_PROCESS){
+            printf("\n%s\n", n->ut_user);
+        }
+        n = getutent();
+    }
     return;
 }
-
 
 int main(){
     printf("i am the parent with pid: %d\n",(int) getpid());
     pid_t pid=fork();
-    
     if (pid<0){
         perror("Fork Failed\n");
     }
@@ -46,9 +53,8 @@ int main(){
         printf("\nExiting process with Pid:%d\n",(int)getpid());
         exit(0);
     }  
-
-        printf("\nPid:%d waiting for its child process to end!\n",(int)getpid());
-        wait(NULL);
+    printf("\nPid:%d waiting for its child process to end!\n",(int)getpid());
+    wait(NULL);
     printf("\nExiting process with Pid:%d\n",(int)getpid());
     return 0;
 }
