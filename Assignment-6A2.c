@@ -12,7 +12,6 @@ prog2--> responsible for reading the contents (the process id of process 1)
 #include <unistd.h>
 
 int main(){
-
     //creating the key  
     key_t key=ftok("shared_memory_Assignment6",105);
     //process ID
