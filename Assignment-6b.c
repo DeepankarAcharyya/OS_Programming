@@ -8,6 +8,7 @@ gettimeofday() system call.
 SYSTEM CALLS:
         -times()
         -sysconf(_SC_CLK_TCK)
+        -gettimeofday()
 */
 
 /* 
@@ -21,7 +22,7 @@ STEPS:
 #include<stdio.h>
 #include<stdlib.h>
 #include<unistd.h>
-#include<sys/times.h>
+#include<time.h>
 #include <sys/wait.h>
 
 // struct tms {
@@ -31,14 +32,20 @@ STEPS:
 // clock_t tms_cstime; /* system time of children */
 // };
 
+/*
+struct timeval {
+               time_t      tv_sec;     
+               suseconds_t tv_usec; 
+           };
+*/
+
 int main(){
     //structure to store the time
-    struct tms before,after;
+    time_t before,after;
     //define the frequency --- system dependent
     unsigned long freq=sysconf(_SC_CLK_TCK);
     //start the time
-    time_t start;
-	if ((start = times(&before))!=-1) {
+	before=time(NULL);
         int f=fork();
         if(f==0){
             printf("\nHey!This is the child! ");
@@ -48,21 +55,14 @@ int main(){
             exit(0);
         }
         wait(NULL);
-	}
+	
     //stop the timer
-    time_t end;
-    end = times(&after);
+    after=time(NULL);
     //open the file 
     FILE *fd=fopen("Assignment6B.txt","w");
     //write to the file 
-    // fprintf(fd,"Submission time: %lf seconds\n", (double)(t1.tms_stime));
-	// fprintf(fd,"termition time: %lf seconds\n", (double)(t2.tms_utime)/freq);
-    printf("\n%ld",start);
-    printf("\n%ld",end);
-    printf("\n%ld",after);
-    printf("\n%ld",before);
-    printf("\n%ld",(end-start)/freq);
-    printf("\n%ld\n",(end-start));
+    fprintf(fd,"Submission time: %s \n", ctime(&before));
+	fprintf(fd,"termition time: %s \n", ctime(&after));
     
     //close the file
     fclose(fd);
