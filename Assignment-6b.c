@@ -33,12 +33,12 @@ STEPS:
 
 int main(){
     //structure to store the time
-    struct tms t1,t2;
+    struct tms before,after;
     //define the frequency --- system dependent
     unsigned long freq=sysconf(_SC_CLK_TCK);
     //start the time
     time_t start;
-	if ((start = times(&t1))!=-1) {
+	if ((start = times(&before))!=-1) {
         int f=fork();
         if(f==0){
             printf("\nHey!This is the child! ");
@@ -51,17 +51,18 @@ int main(){
 	}
     //stop the timer
     time_t end;
-    end = times(&t2);
+    end = times(&after);
     //open the file 
     FILE *fd=fopen("Assignment6B.txt","w");
     //write to the file 
     // fprintf(fd,"Submission time: %lf seconds\n", (double)(t1.tms_stime));
 	// fprintf(fd,"termition time: %lf seconds\n", (double)(t2.tms_utime)/freq);
-    printf("\n%ld",t2.tms_cstime-t1.tms_cstime);
-    printf("\n%ld",t2.tms_cutime-t1.tms_cutime);
-    printf("\n%ld",t2.tms_stime-t1.tms_stime);
-    printf("\n%ld",t2.tms_utime-t1.tms_utime);
+    printf("\n%ld",start);
+    printf("\n%ld",end);
+    printf("\n%ld",after);
+    printf("\n%ld",before);
     printf("\n%ld",(end-start)/freq);
+    printf("\n%ld\n",(end-start));
     
     //close the file
     fclose(fd);
