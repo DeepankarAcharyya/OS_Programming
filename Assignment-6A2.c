@@ -27,6 +27,6 @@ int main(){
     //detaching from shared memory
     shmdt(str);
     //removing the shared memory
-      shmctl(shared_memory_id,IPC_RMID,NULL);
+    shmctl(shared_memory_id,IPC_RMID,NULL);
     return 0;
 }

@@ -9,6 +9,8 @@ SYSTEM CALLS:
         -times()
         -sysconf(_SC_CLK_TCK)
         -gettimeofday()
+        -time()
+        -ctime()
 */
 
 /* 
@@ -24,20 +26,6 @@ STEPS:
 #include<unistd.h>
 #include<time.h>
 #include <sys/wait.h>
-
-// struct tms {
-// clock_t tms_utime;  /* user time */
-// clock_t tms_stime;  /* system time */
-// clock_t tms_cutime; /* user time of children */
-// clock_t tms_cstime; /* system time of children */
-// };
-
-/*
-struct timeval {
-               time_t      tv_sec;     
-               suseconds_t tv_usec; 
-           };
-*/
 
 int main(){
     //structure to store the time
